@@ -39,23 +39,27 @@ In General
 ### Examples 
 In the `./examples` folder you can find sample flows that demonstrate some use cases for this set of nodes. 
 
+#### `./examples/Timestamps_Earth.json`
+
+![Earth 3D Example](./examples/screens/Earth2.jpg "Earth 3d Example")
+
+Here, the flow takes the TLE data from four different 
+
+This flow will calculate the current position of the ISS, using it's TLE data in the `satellite` node, and convert it into the relevant formats for use with the `worldmap` node.
+
+The `time array` node is used to calculate the timestamps for +/- 20 minutes from the current time, as to create the recent and upcoming path of the ISS. The use of the `switch` node and two `function` nodes converts the data into the right format for the `worldmap` node to render the route as a line and a single point, the latter of which shows the current position.
+
 
 #### `./examples/Timestamps_WM.json`
-#### `./examples/File_input_WM.json`
-#### `./examples/HTTP_input_WM.json`
 <br>
 ***note***: *This example has a dependancy on the `node-red-contrib-web-worldmap` node.* 
 
 ![World Map Example](./examples/screens/trajectory_worldmap "World Map Example")
 
+Here 
+
+`./examples/File_input_WM.json` and `./examples/HTTP_input_WM.json` are similar example flows, which deomnstrate the use of dynamic inputs. 
+- The file input, only availbale on locally run instances of Node-RED, requires a text file to be passed in using the appropriate node, which is then suitablly formatted as an input for the satellite node. The satellite node will then separate this into separate satellites and either corresponding line of TLE data.
+- The HTTP input will request the text from <a href="https://www.celestrak.com/NORAD/elements/stations.txt">this source</a>, which is then formatted as an input for the satellite node. The satellite node will then separate this into separate satellites and either corresponding line of TLE data.
 
 
-#### `./examples/ISS-worldmap.json`
-
-![ISS World Map Example](./examples/screens/iss-worldmap.png "ISS - World Map Example")
-
-
-
-This flow will calculate the current position of the ISS, using it's TLE data in the `satellite` node, and convert it into the relevant formats for use with the `worldmap` node.
-
-The `time array` node is used to calculate the timestamps for +/- 20 minutes from the current time, as to create the recent and upcoming path of the ISS. The use of the `switch` node and two `function` nodes converts the data into the right format for the `worldmap` node to render the route as a line and a single point, the latter of which shows the current position.
