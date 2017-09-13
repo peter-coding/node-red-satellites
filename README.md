@@ -11,7 +11,7 @@ Earth Implementation
 
 - I have had some trouble trying to get the Websockets to work correctly. I have overcome this by changing a few lines in the 'Earth.js' and 'satellites/satellites.js' files. 
 
-![Earth.js](./examples/screens/Errors/websockets - earthjs.jpg) | ![satellites/satellites.js](./examples/screens/Errors/websockets - satjs.jpg)
+![Earth.js](./examples/screens/Errors/websockets - earthjs.jpg "Earth.js lines") | ![satellites/satellites.js](./examples/screens/Errors/websockets - satjs.jpg "Satellites.js lines")
 
 This however creates conflicts between the Websockets of the Worldmap node and the Earth node. When using the Earth node like this, do not use the worldmap node. If you do by accident, then it may be necessary to remove the worldmap node and re-deploying, before closing all Node-RED related tabs and resetting the Node.js server.
 
