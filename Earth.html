@@ -1,0 +1,167 @@
+<script type="text/javascript">
+    RED.nodes.registerType('earth',{
+        category: 'location',
+        color: '#6b89ef',
+        defaults: {
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        icon: "white-globe.png",
+        label: function() {
+            return this.name || "earth";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="earth">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+<style>
+.form-row label {
+    vertical-align: middle;
+}
+textarea{
+    width: 70%;
+}
+select{
+    width: 70%;
+}
+</style>
+
+<script type="text/x-red" data-help-name="earth">
+    <!--Main help-->
+    <h1 class="titles">Earth</h1>
+        <!--Summary-->
+        <h2 class="titles">Summary</h2>
+            <p> 
+                A 3D rendering of the earth, onto which orbitting markers can be added.
+            </p>
+            <p>
+                Plot multiple spherical markers (with unique names) on a 3D rendering of the earth.
+            </p>
+        <hr>
+        <!--Inputs-->
+        <h2 class="titles">Inputs</h2>
+            <!--Minimum Input-->
+            <h3 class="titles">Default <code>msg.payload</code></h3>
+                <p>
+                    The default <code>msg.payload</code> is a object with the properties <code>name</code>, <code>position</code>.
+                        <span class="data-type"> 
+                            object
+                         </span>
+                </p>
+                <dl>
+                    <dt class="io">
+                        <p>
+                            <code>name</code>
+                                <span class="data-type"> 
+                                    string
+                                </span>
+                        </p>
+                    </dt>
+                    <dd>
+                        <p>
+                            The name of the satellite to be plotted. This can be accessed through the <code>satid</code> property of the satellites node.
+                        </p>
+                    </dd>
+                    <dt class="io">
+                        <p>
+                            <code>position</code>
+                                <span class="data-type"> 
+                                    object
+                                </span>
+                        </p>
+                    </dt>
+                    <dd>
+                        <p>
+                            The <code>position</code> object stores the Euclidean (x,y,z) position of the satellite, where (0,0,0) is at the centre of the Earth. It has the format:
+                            <br>
+                            <span class="code">position:{'x':3720.74, 'y':2148.92, 'z':5236.12}</span>
+                            <br>
+                            Here, the position values are in Kilometers.
+                        </p>
+                    </dd>
+                </dl>
+            <!--Additional Properties-->
+            <h3 class="titles">Additional Properties</h3>
+                <dl>
+                    <dt class="io">
+                        <p>
+                            <code>color</code>
+                                <span class="data-type"> 
+                                    string
+                                </span>
+                        </p>
+                    </dt>
+                    <dd>
+                        <p>
+                            The <code>color</code> property is a hexadecimal HTML colour code, written as a string, e.g. '#800000'. 
+                            <br>
+                            This will override the default color of the sphere's rendered for a given plotted object.
+                            <br>
+                            <b>Not currently integrated.</b> 
+                        </p>
+                    </dd>
+        <hr>
+
+        <!--Outputs-->
+        <h2 class="titles">Output</h2>
+            <h3 class="titles">Default</h3>
+                <dl>
+                    <!--URL-->
+                    <dt class="io">
+                        <p>
+                            URL
+                                <span class="data-type"> 
+                                    string
+                                </span>
+                        </p>
+                    </dt>
+                    <dd>
+                        <p>
+                            Link to the 3D earth Visualisation:
+                            <span>
+                                <a class="editor-button" style="margin-left: 10px;" target="_blank" id="helplink" href="/earth">
+                                    <i class="fa fa-external-link"></i>
+                                </a>
+                            </span>
+                        </p> 
+                    </dd>
+                </dl>
+</script>
+<style>
+    h1.titles, h2.titles{
+        line-height:20px;
+    }
+    h3.titles{
+        line-height:20px;
+        font-weight:bold;   
+    }
+    dt.io{
+        color: #AD1625;
+        font-weight: bold;
+
+    }
+    dt.io-optional{
+        color: #AD1625;
+        font-weight: bold;
+        font-style: italic;
+
+    }
+    span.data-type{
+        float: right;
+        font-style: italic;
+        font-weight: lighter;
+        font-size: 11px;
+        color: #666;
+    }
+    span.code{
+        font-family: "Courier New", Monospace;
+    }
+</style>
+
+

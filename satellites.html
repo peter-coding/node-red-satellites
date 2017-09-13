@@ -1,141 +1,356 @@
 <script type="text/javascript">
-    RED.nodes.registerType('satellite',{
-        category: 'satellites',
-        color: '#878787',
-        defaults: {
-            satid: {value:""},
-            tle1: {value:""},
-            tle2: {value:""},
-            name: {value:""}
-        },
-        inputs:1,
-        outputs:1,
-        icon: "satellite.png",
-        label: function() {
-            return this.name || "satellite";
-        }
-    });
+	RED.nodes.registerType('satellite',{
+		category: 'Satellites',
+		color:'#C0C0C0',
+		defaults:{
+			typeOption: {value:"dynamicOption"},
+			textInput: {value:""},
+            coordsys: {value:"euclid3d"},
+			name:{value:""},
+			//color:{value:"FF0000"}
+		},
+		inputs:1,
+		outputs:1,
+		icon: "satellite.png",
+		paletteLabel: 'Satellite',
+		label: function() {
+			return this.name || "satellite";
+		}
+	});
 </script>
 
 <script type="text/x-red" data-template-name="satellite">
-    <div class="form-row">
-        <label for="node-input-satid"><i class="icon-tag"></i> Sat. Name</label>
-        <input type="text" id="node-input-satid" placeholder="e.g. 'ISS'">
+	<div class="form-row">
+		<label for="node-input-name"><i class="icon-tag"></i>Name</label>
+		<input type="text" id="node-input-name" placeholder="Name">
+			<!--Put color option here-->
+	</div>
+	<div class="form-row">
+		<label for="node-input-typeOption"><i class="icon-tag"></i>Input Type</label>
+		<select id ="node-input-typeOption" onchange="
+			if(this.value==='dynamicOption'){
+				document.getElementById('node-input-textInput hidden').style.display='none';
+			}
+			else{
+				document.getElementById('node-input-textInput hidden').style.display='inline';
+			}">
+			<option  value="dynamicOption">Dynamic Import</option>
+			<option  value="textOption">Text Box</option>
+		</select>
+	</div>
+	<div class="form-row" id="node-input-textInput hidden">
+        <label for="node-input-textInput"><i class="icon-tag" ></i> Sat. Name</label>
+        <textarea rows="10" cols="70" id="node-input-textInput" 
+        placeholder="ISS (ZARYA)
+        1 25544U 98067A   17133.95012731  .00001185  00000-0  25270-4 0  9998
+        2 25544  51.6431 208.9597 0005402 153.4911 194.6517 15.54009030 56424" width="70%">
+        </textarea>
     </div>
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> TLE 1</label>
-        <input type="text" id="node-input-tle1" placeholder="1 25544U 98067A   13149.87225694  .00009369  00000-0  16828-3 0  9031">
-    </div>
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> TLE 2</label>
-        <input type="text" id="node-input-tle2" placeholder="2 25544 051.6485 199.1576 0010128 012.7275 352.5669 15.50581403831869">
-    </div>
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
+	<div class="form-row" margin-top="12px">
+		<label for="node-input-coordsys" vertical-align="middle"><i class="icon-tag"></i>Ouput Coordinate System</label>
+		<select id ="node-input-coordsys" >
+			<option  value="euclid3d">Euclidean 3D</option>
+			<option  value="latlongdeg">Lat/Long (degrees)</option>
+			<option  value="latlongrad">Lat/Long (radians)</option>
+		</select>
+	</div>
 </script>
+<style>
+.form-row label {
+	vertical-align: middle;
+}
+textarea{
+	width: 70%;
+}
+select{
+	width: 70%;
+}
+</style>
 
 <script type="text/x-red" data-help-name="satellite">
-	<p>A node to convert TLE data into position ({x,y,z} and {lat,lon,alt}) and velocity ({x,y,z}) data given an (optional) timestamp input.</p>
-	<p>If no timestamp is provided, the current datetime is used.</p>
-	<p>The input can also be an array of timestamps, for which, the output will be an array of positions and velocities at each of those times.</p>
-	<p><strong>Units - Position</strong></p>
-	<p>The <code>x</code>, <code>y</code>, <code>z</code> and <code>alt</code> values in expressed in metres and the <code>lat</code> and <code>lon</code> values are in degrees.
-	<p><strong>Units - Velocity</strong></p>
-	<p>The <code>x</code>, <code>y</code> and <code>z</code> values in expressed in metres/second.
-	<p><strong>Orbit Data</strong></p>
-	<p>TLE data is available at <a href="https://www.celestrak.com/NORAD/elements/" target="_blank">celestrak</a>, including a space station data set found <a href="https://www.celestrak.com/NORAD/elements/stations.txt" target="_blank">here</a></p>
-</script>
 
-<script type="text/javascript">
-    RED.nodes.registerType('timearray',{
-        category: 'satellites',
-        color: '#878787',
-        defaults: {
-            plus: {value:0},
-            minus: {value:0},
-            samples: {value:1},
-            name: {value:""}
-        },
-        inputs: 1,
-        outputs: 1,
-        icon: "clock.png",
-		paletteLabel: 'time array',
-        label: function() {
-            return this.name || "time array";
-        }
-    });
-</script>
+	<!--Main help-->
+	<h1 class="titles">Satellites</h1>
+		<!--Summary-->
+		<h2 class="titles">Summary</h2>
+		<p> 
+			Calculates the positional information of a satellite, specified by <a href="https://en.wikipedia.org/wiki/Two-line_element_set">Two-Line Element (TLE)</a> data, for a given timestamp.
+		</p>
+		<p>
+			The node can process multiple satellites, at multiple points in time, simultaneously. The output can be used for mapping position, trajectory or further calculation.
+		</p>
+		<hr>
 
-<script type="text/x-red" data-template-name="timearray">
-    <div class="form-row" style="margin-left: 100px; width: 70%">
-		<label style="width: 70px; margin-right: 10px;" for="node-input-minus"><strong>+/-</strong> Minus</label>
-		<input style="width: calc(40% - 120px)" type="number" id="node-input-minus" placeholder="0" min="0">
-		<label style="width:30px">mins</label>
-		<label style="margin-left: 20%;width: 70px; margin-right: 10px;" for="node-input-plus"><strong>+/-</strong> Plus</label>
-		<input style="width: calc(40% - 120px)" type="number" id="node-input-plus" placeholder="0" min="0">
-		<label style="width:30px">mins</label>
-    </div>
-	<div class="form-row">
-        <label for="node-input-samples"><i class="icon-tag"></i> Samples</label>
-        <input type="number" id="node-input-samples" placeholder="1" min="1">
-    </div>
-	<div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-</script>
+		<!--Inputs-->
+		<h2 class="titles">Inputs</h2>
+			<h3 class="titles">Timestamps</h3>
+				<p>
 
-<script type="text/x-red" data-help-name="timearray">
-    <div>
-		Given an input of a single timestamp, this node will output an array, length <code>samples</code>, of timestamps ranging from <code>msg.payload - minus</code> to <code>msg.payload + plus</code>
-	</div>
-</script>
+				</p>
+				<dl>
+					<!--Single timestamp-->
+					<dt class="io">
+						<p>
+							Single timestamp
+								<span class="data-type"> 
+									number
+								</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							In this instance, <code>msg.payload</code> is the time in milliseconds using the Unix Epoch. This is the default output of the timestamp node.
+						</p>
+					</dd>
+					<!--Multiple timestamps-->
+					<dt class="io">
+						<p>
+							Array of multiple timestamps
+								<span class="data-type"> 
+									object
+								</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							<code>msg.payload</code> comprises the <code>currenttime</code> property (containing the 'current' timestamp) and the <code>times</code> property (an array of timestamps before or after the current timestamp). This is the default output of the time array node.
+						</p>
+					</dd>
+					<!--Other inputs-->
+					<dt class="io">
+						<p>
+							Other
+						</p>
+					</dt>
+					<dd>
+						<p>
+							For a <code>msg.payload</code> of any other format, the Satellites node will calculate a new timestamp, equivalent to the single timestamp format.
+						</p>
+					</dd>
+				</dl>
+			<h3 class="titles">Name and TLE</h3>
+			<!--discuss general format, e.g. each satellite has name, then TLE in correct format (how node finds these things)-->
+				<dl>
+					<dt class="io">
+						<p>
+							Dynamic Input
+								<span class="data-type">
+									string
+								</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+						 	If the 'Dynamic Import' option is selected in the configuration of the node, then <code>msg.payload.textInput</code> will contain the 'Name and TLE' data. 
+						 	<br>
+						 	The data can be sourced by a HTTP request node calling to a site such as <a href="https://www.celestrak.com/NORAD/elements/stations.txt" target="_blank">this</a>. 
+						 	<br>
+						 	<b>NOTE:</b> merging timestamps and HTTP text input can sometimes fall out of synchronisation, which causes errors.
+						 	<br>
+						 	If run locally, the data can be sourced from a File Input node calling a .txt file.
+						 </p>
+					</dd>
+					<dt class="io"> 
+						<p>
+							Textbox input 
+								<span class="data-type">
+									string
+								</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							If the 'Text box' option is selected in the configuration of the node, then a textbox area will be displayed, into which 'Name and TLE' data maybe copy and pasted from a source such as <a href="https://www.celestrak.com/NORAD/elements/stations.txt" target="_blank">this</a>. 
+						</p>
+					</dd>
+				</dl>
+		<hr>
 
-<script type="text/javascript">
-    RED.nodes.registerType('earth',{
-        category: 'satellites',
-        color: '#6b89ef',
-        defaults: {
-            name: {value:""}
-        },
-        inputs:1,
-        outputs:0,
-        icon: "white-globe.png",
-        label: function() {
-            return this.name || "earth";
-        }
-    });
-</script>
+		<!--Controls-->
+		<h2 class="titles">Controls</h2>
+			<p>
+				 The 'Input Type' dropdown discussed above allows for the 'Sat. Name' text input, or for dynamic input. There is also the 'Output Coordinate System' dropdown.
+			</p>
+			<dl>
+				<!--Coordinate system-->
+				<dt class="io">
+					<p>
+						Coordinate System
+								<span class="data-type"> 
+									array
+								</span>
+					</p>
+				</dt>
+				<dd>
+					<p>
+							If the <span class="code">Euclidean 3D</span> option is selected: <br>
+							<span class="code"> 
+								<code>msg.payload.euclid3dpos</code>= [x,y,z]
+								<code>msg.payload.euclid3dvel</code> = [x',y',z'] 
+							</span>
+					</p>
 
-<script type="text/x-red" data-template-name="earth">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-</script>
+					<p>
+							If the <span class="code">Lat/Long (degrees)</span> option is selected: <br>
+							<span class="code"> 
+								<code>msg.payload.latlongdeg</code> = [latitude,longitude,altitude]
+							</span>
+					</p>
 
-<script type="text/x-red" data-help-name="earth">
-    <div>
-		<label>Open Earth View</label>
-		<a href="/earth" class="editor-button" style="margin-left: 10px;" target="_blank">
-			<i class="fa fa-external-link"></i>
-		</a>
-	</div>
-	<p>A 3d viewer for Earth and any satellites that are input here.</p>
-	<p>The minimum <code>msg.payload</code> must contain <code>name</code>, <code>position</code> and <code>velocity</code> properties, e.g.</p>
-	<pre>{
-name : "ISS",
-"position": {
-	"x": 3720.74,
-	"y": 2148.92,
-	"z": 5236.12
-},
-"velocity": {
-	"x": -2.7,
-	"y": 7.1,
-	"z": -1.0
-}}</pre>
-	<p>Optionally, you can also include a <code>color</code> property, which will override the default color of the sphere's rendered for a given plotted object.</p>
+					<p>
+							If the <span class="code">Lat/Long (radians)</span> option is selected: <br>
+							<span class="code"> 
+								<code>msg.payload.latlongrad</code> = [latitude, longitude, altitude]
+							</span>
+					</p>
+				</dd>
+			</dl>
+		<hr>
+
+		<!--Outputs-->
+		<h2 class="titles">Output</h2>
+			<p>
+				<code>msg.payload</code> is an array, with each entry being an object representing an individual satellite. Example:<br>
+				<code>msg.payload</code><span class="code">=[{name: sat1,...},{name: sat2,...},...]</span>
+			</p>
+			<h3 class="titles">Properties of each satellite</h3>
+				<dl>
+					<!--satid-->
+					<dt class="io">
+						<p>
+							<code>name</code>
+								<span class="data-type"> 
+									string
+								</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							The satellite's name; determined from the <span class="code">Name and TLE</span> input.
+						</p>
+					</dd>
+					<!--TLE-->
+					<dt class="io">
+						<p>
+							<code>tle1</code> and <code>tle2</code>
+									<span class="data-type"> 
+										string
+									</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							The 1<sup>st</sup> and 2<sup>nd</sup> lines of the TLE data; determined from the 'Name and TLE' input.
+						</p>
+					</dt>
+					<!--currenttime-->
+					<dt class="io">
+						<p>
+							<code>currenttime</code>
+								<span class="data-type"> 
+									number
+								</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							The current timestamp; either the only timestamp, or determined from the <code>currenttime</code> property from the <code>msg.payload</code> input.
+						</p>
+					</dd>
+					<!--currentposition-->
+					<dt class="io">
+						<p>
+							<code>currentposition</code>
+									<span class="data-type"> 
+										number
+									</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							An array containing the position of the satellite corresponding to the <code>currenttime</code> timestamp. The position is formatted according to the 
+						</p>
+					</dt>
+					<!--time array-->
+					<dt class="io">
+						<p>
+							<code>times</code>
+									<span class="data-type"> 
+										array
+									</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							The <code>times</code> array if included in the <code>msg.payload</code> input.
+						</p>
+					</dd>
+					<!--Position-->
+					<dt class="io">
+						<p>
+							<code>euclid3dpos</code>/<code>euclid3dvel</code> or <code>latlongpos</code>
+									<span class="data-type"> 
+										array
+									</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							<code>euclid3dpos</code> and <code>euclid3dvel</code> represent the position and velocity of the satellite given in Euclidean geometry.
+							<br>
+							<code>latlongpos</code> represents the position of the satellite given in Spherical Coordinates (i.e. Latitudes, Longitudes and Altitude), either in radians or degrees.
+						</p>
+					</dd>
+
+
+					<!--Errors-->
+					<dt class="io">
+						<p>
+							<code>msg.error</code>
+									<span class="data-type"> 
+										array
+									</span>
+						</p>
+					</dt>
+					<dd>
+						<p>
+							<code>msg.error</code> is an array of objects, each object contains a different error.
+						</p>
+						<p>
+							<code>texterror: "No valid TLE data"</code> denotes that the text input isn't a string. This may be because of an incorrect format or because the text source has fallen out of synchronisation with the other inputs.
+							<br>
+							<code>timeerror: "???"</code>, where ??? may be 'plural', 'single' or 'none'. This denotes whether there are multiple timestamps or a single timestamp at the input, or when no timestamp is provided and one is calculated in this node. Can be helpful for tracking asynchronous data inputs.
+						</p>
+					</dd>
+				</dl>
 </script>
+<style>
+	h1.titles, h2.titles{
+		line-height:20px;
+	}
+	h3.titles{
+		line-height:20px;
+		font-weight:bold;	
+	}
+	dt.io{
+		color: #AD1625;
+		font-weight: bold;
+
+	}
+	dt.io-optional{
+		color: #AD1625;
+		font-weight: bold;
+		font-style: italic;
+
+	}
+	span.data-type{
+		float: right;
+		font-style: italic;
+		font-weight: lighter;
+		font-size: 11px;
+		color: #666;
+	}
+	span.code{
+        font-family: "Courier New", Monospace;
+    }
+</style>
