@@ -49,9 +49,10 @@ A video demonstration of the nodes working can be seen here: [Vimeo](https://vim
 
 #### `./examples/Timestamps_WM.json`
 <br>
+
 ***note***: *This example has a dependancy on the `node-red-contrib-web-worldmap` node.* 
 
-![World Map Example](./examples/screens/trajectory_worldmap "World Map Example")
+![World Map Example](./examples/screens/trajectory_worldmap.jpg "World Map Example")
 
 Here, the flow takes the TLE data from four different satellites. Firstly, a timestamp is received at a Time Array node, which creates an array of timestamps, taking `n` samples over a +/- time interval. These timestamps are then passed onto the ISS satellite node. Another satellite node, TIAGONG, only rececives a single timestamp. Finally, the satellite node representing both the satellites NODE1 and NODE2 does not receive a timestamp, but instead simply receives a boolean payload as a trigger.
 
