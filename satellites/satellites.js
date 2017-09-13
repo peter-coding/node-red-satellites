@@ -2,7 +2,7 @@
 Connect to the Node-RED Events
 */
 
-var ws = io();{
+var ws = io({
 	path: location.pathname + 'socket.io'
 });
 
@@ -102,7 +102,7 @@ function init() {
 	scene.add(sphere);
 
 
-	//geometry = new THREE.SphereGeometry(6.372, 180, 360);
+	geometry = new THREE.SphereGeometry(6.372, 180, 360);
 
 	/*// CREATE STARFIELD
 	var skybox = new THREE.SphereGeometry(90, 32, 32);
@@ -151,9 +151,9 @@ var satellites = {};
 function updateSatellite(data) {
 	console.log('update', data);
 	var pos = data.position;
-	
+	// render();
 	if (satellites[data.name]) {
-		satellites[data.name].position.set(pos.x / 1000, pos.y / 1000, pos.z / 1000);
+		satellites[data.name].position.set(pos.y / 1000000, -pos.x / 1000000, pos.z / 1000000);
 	} else {
 		var satGeometry = new THREE.SphereGeometry(0.1, 32, 32);
 		console.log(data);
@@ -162,10 +162,9 @@ function updateSatellite(data) {
 			specular: '#eee'
 		});
 		satellites[data.name] = new THREE.Mesh(satGeometry, satMaterial);
-		satellites[data.name].position.set(pos.x / 1000, pos.y / 1000, pos.z / 1000);
+		satellites[data.name].position.set(pos.y / 1000000, -pos.x / 1000000, pos.z / 1000000);
 		scene.add(satellites[data.name]);
 	}
-	render();
 }
 
 function onWindowResize() {
