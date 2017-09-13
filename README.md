@@ -1,7 +1,7 @@
 node-red-contrib-satellites (v0.2.1)
 =============================
 
-A set of <a href="http://nodered.org" target="_new">Node-RED</a> nodes to help working with Two-Line-Element (TLE) sets. Utilising the <a href="https://github.com/shashwatak/satellite-js">satellites.js</a> library to convert the TLE sets into <i>x, y, z</i> and <i>latitude/longitude</i> coordinates.
+A set of <a href="http://nodered.org" target="_new">Node-RED</a> nodes for working with Two-Line-Element (TLE) sets. Utilising the <a href="https://github.com/shashwatak/satellite-js">satellites.js</a> library to convert the TLE sets into <i>x, y, z</i> and <i>latitude/longitude</i> coordinates.
 <br>
 ***note***: *Some of these implementations have a dependancy on the `node-red-contrib-web-worldmap` node.* 
 
