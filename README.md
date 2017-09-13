@@ -9,9 +9,10 @@ A set of <a href="http://nodered.org" target="_new">Node-RED</a> nodes to help w
 
 Earth Implementation
 
-- I have had some trouble trying to get the Websockets to work correctly. I have overcome this by changing a few lines in the 'Earth.js' and 'satellites/satellites.js' files. 
+- I have had some trouble trying to get the Websockets to work correctly. I have overcome this by changing a few lines in the 'Earth.js' and 'satellites/satellites.js' files. By commenting out line 15 of Earth.js, i.e. change `path: fullpath` to `//path: fullpath`, and changing lines 5-7 of satellites.js to just `var ws = io();`, the websockets would work. These lines of code in their current form are shown in the images below.
 
-![Earth.js](./examples/screens/Errors/websockets - earthjs.jpg "Earth.js lines") | ![satellites/satellites.js](./examples/screens/Errors/websockets - satjs.jpg "Satellites.js lines")
+![Earthjs](./examples/screens/Errors/websockets_earthjs.jpg "Earth.js lines")
+![satellites/satellitesjs](./examples/screens/Errors/websockets_satjs.jpg "Satellites.js lines")
 
 This however creates conflicts between the Websockets of the Worldmap node and the Earth node. When using the Earth node like this, do not use the worldmap node. If you do by accident, then it may be necessary to remove the worldmap node and re-deploying, before closing all Node-RED related tabs and resetting the Node.js server.
 
@@ -23,7 +24,11 @@ Worldmap Implementation
 
 - Markers across all layers can disappear, or fail to appear in the first place. In this instance, using the menu on the right-hand side, toggling the layers off and on again should make them re-appear.
 
-- If using the Format Worldmap node with the satellite node, make sure that the coordinate system is not set to Euclidean 3D, as this will generate the following error:
+- Low resolution lines can make it difficult to segment the trajectories properly, resulting inglitches such as these:
+
+![Trajectory Error](./examples/screens/Errors/line_glitch_WM.jpg "Trajectory error")
+
+- If using the Format Worldmap node with the satellite node, make sure that the coordinate system is not set to Euclidean 3D, as this will generate the following error: ![Format node error](./examples/screens/Errors/format_error2.jpg "Format node error")
 
 In General
 
@@ -35,17 +40,21 @@ In General
 In the `./examples` folder you can find sample flows that demonstrate some use cases for this set of nodes. 
 
 
-#### `./examples/ISS.json`
+#### `./examples/Timestamps_WM.json`
+#### `./examples/File_input_WM.json`
+#### `./examples/HTTP_input_WM.json`
+<br>
+***note***: *This example has a dependancy on the `node-red-contrib-web-worldmap` node.* 
 
-![ISS 3d Example](./examples/screens/iss.png "ISS - 3d Example")
+![World Map Example](./examples/screens/trajectory_worldmap "World Map Example")
 
-This flow will calculate the current *xyz* position of the ISS, using the relevant TLE data in the `satellite` node. The data is then fed into the `earth` node for visualisation.
+
 
 #### `./examples/ISS-worldmap.json`
 
 ![ISS World Map Example](./examples/screens/iss-worldmap.png "ISS - World Map Example")
 
-***note***: *This example has a dependancy on the `node-red-contrib-web-worldmap` node.* 
+
 
 This flow will calculate the current position of the ISS, using it's TLE data in the `satellite` node, and convert it into the relevant formats for use with the `worldmap` node.
 
