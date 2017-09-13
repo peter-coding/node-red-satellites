@@ -43,12 +43,9 @@ In the `./examples` folder you can find sample flows that demonstrate some use c
 
 ![Earth 3D Example](./examples/screens/Earth2.jpg "Earth 3d Example")
 
-Here, the flow takes the TLE data from four different 
+Here, the flow takes the TLE data from four different satellites (ISS, TIAGONG, NODE1 and NODE2), and calculates the Euclidean 3d position of each satellite before visualising them on the 3D Earth view. 
 
-This flow will calculate the current position of the ISS, using it's TLE data in the `satellite` node, and convert it into the relevant formats for use with the `worldmap` node.
-
-The `time array` node is used to calculate the timestamps for +/- 20 minutes from the current time, as to create the recent and upcoming path of the ISS. The use of the `switch` node and two `function` nodes converts the data into the right format for the `worldmap` node to render the route as a line and a single point, the latter of which shows the current position.
-
+A video demonstration of the nodes working can be seen here: [Vimeo](https://vimeo.com/233585944 "Satellites Node-RED Project")
 
 #### `./examples/Timestamps_WM.json`
 <br>
@@ -56,10 +53,10 @@ The `time array` node is used to calculate the timestamps for +/- 20 minutes fro
 
 ![World Map Example](./examples/screens/trajectory_worldmap "World Map Example")
 
-Here 
+Here, the flow takes the TLE data from four different satellites. Firstly, a timestamp is received at a Time Array node, which creates an array of timestamps, taking `n` samples over a +/- time interval. These timestamps are then passed onto the ISS satellite node. Another satellite node, TIAGONG, only rececives a single timestamp. Finally, the satellite node representing both the satellites NODE1 and NODE2 does not receive a timestamp, but instead simply receives a boolean payload as a trigger.
 
-`./examples/File_input_WM.json` and `./examples/HTTP_input_WM.json` are similar example flows, which deomnstrate the use of dynamic inputs. 
+Each fo the satellites nodes separates out the different spacecraft before calculating their current position. Additionally for the ISS, the position of the ISS will be determined for all the timestamps provided from the Time Array node. The Format Worldmap node will then take this information and produce a string of messages which will output to a 2D map of the wolrd.The current position of satellites is shown by the markers, whilst the trajectories are drawn using a polyline. The markers and lines sorresponding to each satellite can be switched on/off by toggling the checkboxes in the layers menu (top right of map).
+
+`./examples/File_input_WM.json` and `./examples/HTTP_input_WM.json` are similar example flows, which deomnstrate the use of dynamic inputs. ***note***: *It is not advisable to run these scripts whilst providing the entire list of satellites available at the CelesTrak source given below.*
 - The file input, only availbale on locally run instances of Node-RED, requires a text file to be passed in using the appropriate node, which is then suitablly formatted as an input for the satellite node. The satellite node will then separate this into separate satellites and either corresponding line of TLE data.
-- The HTTP input will request the text from <a href="https://www.celestrak.com/NORAD/elements/stations.txt">this source</a>, which is then formatted as an input for the satellite node. The satellite node will then separate this into separate satellites and either corresponding line of TLE data.
-
-
+- The HTTP input will request the text from <a href="https://www.celestrak.com/NORAD/elements/stations.txt">CelesTrak</a>, which is then formatted as an input for the satellite node. The satellite node will then separate this into separate satellites and either corresponding line of TLE data.
